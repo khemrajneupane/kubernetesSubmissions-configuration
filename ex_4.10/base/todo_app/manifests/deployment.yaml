@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app
+  annotations:
+    gitops-test: "exercise-4.8-gitops"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: todo-app
+  template:
+    metadata:
+      labels:
+        app: todo-app
+    spec:
+      volumes:
+        - name: todo-app-storage
+          persistentVolumeClaim:
+            claimName: todo-app-pvc
+      containers:
+        - name: todo-app
+          image: TODO/IMAGE
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+          envFrom:
+            - configMapRef:
+                name: todo-app-config
+          volumeMounts:
+            - name: todo-app-storage
+              mountPath: /usr/src/app/files
+          ports:
+            - containerPort: 3000
