@@ -9,3 +9,18 @@
 - Updated both Argo CD Application files to use the new configuration repository, the `main` branch, and the correct staging and production overlay paths.
 - Validated the staging and production configurations using `kubectl kustomize`.
 - Next, commit and push the configuration repository, then update the live Argo CD Applications to use it.
+- After github commit, update the existing staging and production applications:
+
+```sh
+kubectl apply -f ex_4.10/argocd/todo-staging-application.yaml -n argocd
+kubectl apply -f ex_4.10/argocd/todo-production-application.yaml -n argocd
+```
+
+- checking in todo-staging and todo-production for conditions, events, sources, repoURL and path and are verified to be up to date with the latest commit:
+
+```sh
+kubectl describe application todo-staging -n argocd
+kubectl describe application todo-production -n argocd
+```
+
+- both Applications were switched to the new repository and verified as synced
